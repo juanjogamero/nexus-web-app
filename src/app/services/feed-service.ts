@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, forkJoin, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ProductoService } from './producto-service';
 import { OfertaService } from './oferta-service';
 import { NexusItem, isOferta } from '../models/nexus-item';
@@ -19,12 +19,8 @@ export class FeedService {
     if (environment.demoMode) return of([...demoOfertas, ...demoProductos]);
 
     return forkJoin({
-      productos: this.productos.getDisponibles().pipe(
-        catchError(error => { console.error('Error en productos', error); return of([] as Producto[]); })
-      ),
-      ofertas: this.ofertas.getActivas().pipe(
-        catchError(error => { console.error('Error en ofertas', error); return of([] as Oferta[]); })
-      )
+      productos: this.productos.getDisponibles(),
+      ofertas: this.ofertas.getActivas()
     }).pipe(map(({ productos, ofertas }) => [...ofertas, ...productos]));
   }
 
