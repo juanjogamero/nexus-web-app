@@ -16,7 +16,7 @@ describe('Fichas Nexus', () => {
   });
   it('notifica un error si el producto no existe', () => {
     service.getProductoById(99999).subscribe({
-      next: () => fail('Se esperaba un error'),
+      next: () => { throw new Error('Se esperaba un error'); },
       error: error => expect(error.message).toContain('no encontrado')
     });
   });
