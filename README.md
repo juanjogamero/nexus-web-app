@@ -67,7 +67,11 @@ Crea el archivo `src/environments/enviroment.ts` (se mantiene la grafía `enviro
 ```ts
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080'
+  apiUrl: 'http://localhost:8080',
+  upload: {
+    allowedImageTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    maxFileSize: 5 * 1024 * 1024
+  }
 };
 ```
 
