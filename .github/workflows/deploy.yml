@@ -31,7 +31,7 @@ jobs:
         env:
           NEXUS_API_URL: ${{ vars.NEXUS_API_URL }}
         run: |
-          node -e "const fs = require('node:fs'); const url = process.env.NEXUS_API_URL || 'https://example.invalid/api'; fs.mkdirSync('src/environments', { recursive: true }); fs.writeFileSync('src/environments/enviroment.ts', 'export const environment = { production: true, apiUrl: ' + JSON.stringify(url.replace(/\\/$/, '')) + ' };\\n');"
+          node -e "const fs = require('node:fs'); const url = process.env.NEXUS_API_URL || 'https://example.invalid/api'; fs.mkdirSync('src/environments', { recursive: true }); fs.writeFileSync('src/environments/enviroment.ts', 'export const environment = { production: true, apiUrl: ' + JSON.stringify(url.endsWith('/') ? url.slice(0, -1) : url) + ' };' + String.fromCharCode(10));"
       - name: Build Angular for project site
         run: npx ng build --configuration production --base-href /nexus-web-app/
       - name: Prepare Pages artifact
