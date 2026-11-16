@@ -1,0 +1,57 @@
+name: Publicar Nexus en GitHub Pages
+on:
+  push:
+    branches: [main]
+    paths: ['src/**','public/**','package*.json','angular.json','.github/workflows/pages.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: nexus-pages
+  cancel-in-progress: true
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    outputs:
+      habilitado: ${{ steps.pages.outputs.habilitado }}
+    steps:
+      - name: Comprobar GitHub Pages
+        id: pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh api "repos/${{ github.repository }}/pages" >/dev/null 2>&1; then
+            echo "habilitado=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "habilitado=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Activa GitHub Pages en Settings > Pages > GitHub Actions para publicar la muestra."
+          fi
+  build:
+    needs: comprobar
+    if: needs.comprobar.outputs.habilitado == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Compilar para Pages
+        run: npm run build -- --base-href /nexus-web-app/
+      - name: Preparar rutas directas
+        run: cp dist/nexusapp/browser/index.html dist/nexusapp/browser/404.html
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/nexusapp/browser
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deploy

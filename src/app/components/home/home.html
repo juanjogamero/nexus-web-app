@@ -1,51 +1,51 @@
 <app-hero></app-hero>
-
-<section class="feed-section container">
-  
+<section class="feed-section container" id="catalogo">
+  <div *ngIf="isDemo" class="demo-alert" role="status">
+    <strong>EXPLORA EL PROYECTO</strong>
+    <span>Los artículos, precios y vendedores de esta versión son ficticios. El repositorio contiene el frontend Angular; las compras y los mensajes requieren una API propia.</span>
+    <a routerLink="/proyecto">Detalles ↗</a>
+  </div>
   <div class="feed-header">
-    <h2 class="section-title">Explorar Nexus</h2>
-    
-    <div class="filter-tabs glass-panel">
-      <button 
-        class="tab-btn" 
-        [class.active]="activeFilter === 'all'"
-        (click)="setFilter('all')">
-        Todo
-      </button>
-      <button 
-        class="tab-btn" 
-        [class.active]="activeFilter === 'deals'"
-        (click)="setFilter('deals')">
-        Ofertas Flash
-      </button>
-      <button 
-        class="tab-btn" 
-        [class.active]="activeFilter === 'secondhand'"
-        (click)="setFilter('secondhand')">
-        Segunda Mano
-      </button>
-      
-      <div class="active-bg" [attr.data-pos]="activeFilter"></div>
+    <div>
+      <span class="feed-eyebrow">CURATED MARKET / NEXUS</span>
+      <h2 class="section-title">Explora el catálogo<span>.</span></h2>
+      <p class="section-intro">Segunda mano y ofertas seleccionadas en un mismo espacio.</p>
+    </div>
+    <span class="results-count">{{ filteredProducts.length }} resultados</span>
+  </div>
+  <div class="filter-toolbar">
+    <div class="filter-tabs" role="group" aria-label="Filtrar catálogo">
+      <button type="button" class="tab-btn" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">Todo</button>
+      <button type="button" class="tab-btn" [class.active]="activeFilter === 'deals'" (click)="setFilter('deals')">Ofertas</button>
+      <button type="button" class="tab-btn" [class.active]="activeFilter === 'secondhand'" (click)="setFilter('secondhand')">Segunda mano</button>
+      <button type="button" class="tab-btn" [class.active]="activeFilter === 'favorites'" (click)="setFilter('favorites')">Favoritos</button>
+    </div>
+    <div class="feed-selects">
+      <label>Categoría
+        <select [value]="categoria" (change)="setCategory($any($event.target).value)">
+          <option value="">Todas</option><option *ngFor="let category of categorias" [value]="category">{{ category }}</option>
+        </select>
+      </label>
+      <label>Ordenar
+        <select [value]="sort" (change)="setSort($any($event.target).value)">
+          <option value="relevance">Relevancia</option>
+          <option value="price-low">Menor precio</option>
+          <option value="price-high">Mayor precio</option>
+        </select>
+      </label>
     </div>
   </div>
-
-  <div class="product-grid" *ngIf="!isLoading; else loadingTpl">
-    <app-product-card 
-      *ngFor="let item of filteredProducts" 
-      [product]="item"
-      class="grid-item">
-    </app-product-card>
+  <p *ngIf="searchQuery" class="search-summary">Resultados para <strong>“{{ searchQuery }}”</strong> <button type="button" (click)="clearFilters()">Borrar búsqueda</button></p>
+  <div class="loading-state" *ngIf="isLoading"><div class="spinner" aria-hidden="true"></div><p>Cargando artículos...</p></div>
+  <div class="empty-state" *ngIf="!isLoading && loadError">
+    <h3>No se ha podido conectar con el catálogo</h3><p>Comprueba la conexión con tu API REST e inténtalo otra vez.</p>
+    <button type="button" (click)="cargarFeed()">Reintentar</button>
   </div>
-
-  <div *ngIf="!isLoading && filteredProducts.length === 0" class="empty-state">
-    <p>No se encontraron productos en esta categoría.</p>
+  <div class="product-grid" *ngIf="!isLoading && !loadError && filteredProducts.length">
+    <app-product-card *ngFor="let item of filteredProducts" [product]="item" class="grid-item"></app-product-card>
   </div>
-
-  <ng-template #loadingTpl>
-    <div class="loading-state">
-      <div class="spinner"></div>
-      <p>Cargando el mercado...</p>
-    </div>
-  </ng-template>
-
+  <div class="empty-state" *ngIf="!isLoading && !loadError && !filteredProducts.length">
+    <h3>No hay artículos que coincidan</h3><p>Prueba con otra categoría o modifica la búsqueda.</p>
+    <button type="button" (click)="clearFilters()">Ver todo el catálogo</button>
+  </div>
 </section>

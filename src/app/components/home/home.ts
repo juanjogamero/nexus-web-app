@@ -1,58 +1,83 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeroComponent } from '../hero/hero'; 
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { HeroComponent } from '../hero/hero';
 import { ProductCardComponent } from '../product-card/product-card';
-import { FeedService } from '../../services/feed-service';
+import { FeedService, FeedFilter } from '../../services/feed-service';
+import { FavoritesService } from '../../services/favorites-service';
 import { NexusItem } from '../../models/nexus-item';
-import { Oferta } from '../../models/oferta';
+import { environment } from '../../../environments/enviroment';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, HeroComponent, ProductCardComponent],
+  imports: [CommonModule, RouterModule, HeroComponent, ProductCardComponent],
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })
 export class HomeComponent implements OnInit {
-  activeFilter: 'all' | 'deals' | 'secondhand' = 'all';
+  readonly isDemo = environment.demoMode;
+  activeFilter: FeedFilter = 'all';
   allItems: NexusItem[] = [];
+  searchQuery = '';
+  categoria = '';
+  sort: 'relevance' | 'price-low' | 'price-high' = 'relevance';
   isLoading = true;
+  loadError = false;
 
-  constructor(private feedService: FeedService) {}
+  constructor(
+    private feedService: FeedService,
+    private route: ActivatedRoute,
+    private router: Router,
+    readonly favorites: FavoritesService
+  ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.route.queryParamMap.subscribe(params => {
+      const filter = params.get('tipo');
+      this.activeFilter = filter === 'deals' || filter === 'secondhand' || filter === 'favorites' ? filter : 'all';
+      this.searchQuery = params.get('q') ?? '';
+      this.categoria = params.get('categoria') ?? '';
+    });
     this.cargarFeed();
   }
 
-  cargarFeed() {
+  cargarFeed(): void {
     this.isLoading = true;
+    this.loadError = false;
     this.feedService.getUnifiedFeed().subscribe({
-      next: (data) => {
-        this.allItems = data;
-        this.isLoading = false;
-        console.log('Feed cargado:', data); // Para depurar
-      },
-      error: (err) => {
-        console.error('Error cargando feed:', err);
-        this.isLoading = false;
-      }
+      next: data => { this.allItems = data; this.isLoading = false; },
+      error: () => { this.loadError = true; this.isLoading = false; }
     });
   }
 
-  get filteredProducts() {
-    if (this.activeFilter === 'all') return this.allItems;
-    
-    return this.allItems.filter(item => {
-      // Chequeo seguro si es oferta
-      const esOferta = (item as Oferta).precioOferta !== undefined;
-      
-      if (this.activeFilter === 'deals') return esOferta;
-      if (this.activeFilter === 'secondhand') return !esOferta;
-      return true;
-    });
+  get categorias(): string[] {
+    return [...new Set(this.allItems.map(item => item.categoria).filter((v): v is string => !!v))].sort();
   }
 
-  setFilter(filter: 'all' | 'deals' | 'secondhand') {
-    this.activeFilter = filter;
+  get filteredProducts(): NexusItem[] {
+    const filter = this.activeFilter === 'favorites' ? 'all' : this.activeFilter;
+    let items = this.feedService.filterFeed(this.allItems, filter, this.searchQuery, this.categoria);
+    if (this.activeFilter === 'favorites') items = items.filter(item => this.favorites.has(item));
+    if (this.sort === 'price-low') return [...items].sort((a,b) => this.price(a) - this.price(b));
+    if (this.sort === 'price-high') return [...items].sort((a,b) => this.price(b) - this.price(a));
+    return items;
+  }
+
+  setFilter(filter: FeedFilter): void {
+    this.router.navigate(['/'], { queryParams: { tipo: filter === 'all' ? null : filter }, queryParamsHandling: 'merge' });
+  }
+  setCategory(categoria: string): void {
+    this.router.navigate(['/'], { queryParams: { categoria: categoria || null }, queryParamsHandling: 'merge' });
+  }
+  setSort(value: string): void {
+    if (value === 'price-low' || value === 'price-high' || value === 'relevance') this.sort = value;
+  }
+  clearFilters(): void {
+    this.sort = 'relevance';
+    this.router.navigate(['/']);
+  }
+  private price(item: NexusItem): number {
+    return 'precioOferta' in item ? item.precioOferta : item.precio;
   }
 }

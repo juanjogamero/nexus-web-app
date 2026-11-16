@@ -1,92 +1,48 @@
-<div class="detail-container container" *ngIf="item; else loadingTpl">
-  
+<section class="detail-container container" *ngIf="item; else loadingTpl">
   <div class="visual-column">
-    <div class="main-image-wrapper glass-panel">
-      <img [src]="type === 'oferta' ? asOferta.urlOferta : asProducto.imagenPrincipal"
-           [alt]="item.titulo" 
-           class="main-image">
-      
-      <div class="badges-overlay">
-        <span class="badge-status" *ngIf="type === 'producto'">{{ asProducto.estadoProducto }}</span>
-        <span class="badge-hot" *ngIf="type === 'oferta'">🔥 Super Precio</span>
+    <a routerLink="/" class="back-link">← Volver al catálogo</a>
+    <div class="main-image-wrapper">
+      <img [src]="currentImage" [alt]="item.titulo" class="main-image" />
+      <span class="badge-status">{{ esOferta ? 'OFERTA' : 'SEGUNDA MANO' }}</span>
+      <div class="gallery-arrows" *ngIf="canNavigateImages">
+        <button type="button" (click)="previousImage()" aria-label="Imagen anterior">←</button>
+        <button type="button" (click)="nextImage()" aria-label="Imagen siguiente">→</button>
       </div>
     </div>
+    <div class="gallery-thumbs" *ngIf="canNavigateImages">
+      <button type="button" *ngFor="let image of allImages; index as i" (click)="selectImage(i)"
+        [class.active]="selectedImageIndex === i" [attr.aria-label]="'Imagen ' + (i+1)">
+        <img [src]="image" [alt]="item.titulo + ', imagen ' + (i+1)" />
+      </button>
+    </div>
   </div>
-
   <div class="info-column">
-    
-    <div class="breadcrumbs">
-      <a routerLink="/" class="back-link">← Volver al inicio</a>
-      <span class="separator">/</span>
-      <span class="current-cat">{{ type === 'oferta' ? 'Ofertas' : 'Segunda Mano' }}</span>
-    </div>
-
+    <div class="detail-eyebrow">NEXUS / {{ categoria | uppercase }} / {{ esOferta ? 'OFERTA' : 'SEGUNDA MANO' }}</div>
     <h1 class="item-title">{{ item.titulo }}</h1>
-
+    <p class="seller-name">Publicado por {{ vendedor }}</p>
     <div class="price-block">
-      <div class="price-row">
-        <span class="current-price">
-          {{ type === 'oferta' ? asOferta.precioOferta : asProducto.precio }}€
-        </span>
-        
-        <span class="original-price" *ngIf="type === 'oferta' && asOferta.precioOriginal > asOferta.precioOferta">
-          {{ asOferta.precioOriginal }}€
-        </span>
-        
-        <span class="discount-tag" *ngIf="type === 'oferta' && asOferta.precioOriginal > 0">
-          Ahorras {{ (asOferta.precioOriginal - asOferta.precioOferta).toFixed(2) }}€
-        </span>
-      </div>
+      <strong class="current-price">{{ precio }}</strong>
+      <span class="original-price" *ngIf="precioAntes as precioAnterior">{{ precioAnterior }}</span>
     </div>
-
-    <div class="description-box glass-panel">
-      <h3>Descripción</h3>
-      <p>{{ item.descripcion }}</p>
-    </div>
-
-    <div class="meta-box">
-      <div class="seller-info">
-        <div class="avatar-placeholder">
-          {{ type === 'oferta' ? asOferta.tienda.charAt(0) : asProducto.publicador.user.charAt(0) || 'U' }}
-        </div>
-        <div class="seller-details">
-          <span class="seller-label">{{ type === 'oferta' ? 'Tienda' : 'Vendedor' }}</span>
-          <span class="seller-name">
-            {{ type === 'oferta' ? asOferta.tienda : asProducto.publicador.user || 'Usuario Nexus' }}
-          </span>
-        </div>
-      </div>
-      
-      <div class="trust-badge">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shield-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-        <span>Nexus Protect: Compra Segura</span>
-      </div>
-    </div>
-
+    <div class="description-box"><h2>Sobre este artículo</h2><p>{{ item.descripcion }}</p></div>
+    <div class="meta-box"><span>Estado</span><strong>{{ estado }}</strong></div>
     <div class="actions-bar">
-      <ng-container *ngIf="type === 'oferta'">
-        <a [href]="asOferta.urlOferta" target="_blank" class="btn-nexus-primary btn-block">
-          Ir al Chollo
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-        </a>
-      </ng-container>
-
-      <ng-container *ngIf="type === 'producto'">
-        <button class="btn-nexus-primary btn-block">
-          Comprar Ahora
-        </button>
-        <button class="btn-nexus-glass btn-block">
-          Chat con Vendedor
-        </button>
-      </ng-container>
+      <button type="button" class="btn-nexus-glass btn-block" (click)="favorites.toggle(item)">
+        {{ favorites.has(item) ? '♥ Guardado en favoritos' : '♡ Guardar en favoritos' }}
+      </button>
+      <button type="button" class="btn-nexus-glass btn-block" (click)="shareItem()">Compartir ↗</button>
     </div>
-
+    <a *ngIf="externalOfferUrl as url" class="btn-nexus-primary link-store" [href]="url" target="_blank" rel="noopener noreferrer">Ir a la oferta en tienda ↗</a>
+    <div class="availability-note" *ngIf="!externalOfferUrl">
+      <strong>{{ isDemo ? 'Artículo de demostración' : 'Información del anuncio' }}</strong>
+      <p>{{ isDemo ? 'Esta ficha muestra un ejemplo de la interfaz. No representa una venta real y no admite pagos, reservas ni mensajes.' : 'El proceso de contacto o compra no está habilitado en esta versión web.' }}</p>
+    </div>
   </div>
-</div>
-
+</section>
 <ng-template #loadingTpl>
-  <div class="loading-container">
-    <div class="spinner"></div>
-    <p>Cargando detalles...</p>
+  <div class="loading-container" *ngIf="loading"><div class="spinner" aria-hidden="true"></div><p>Cargando ficha...</p></div>
+  <div class="loading-container" *ngIf="!loading && error">
+    <h2>Artículo no disponible</h2><p>No hemos podido encontrar esta ficha.</p>
+    <a routerLink="/" class="btn-nexus-primary">Volver al catálogo</a>
   </div>
 </ng-template>

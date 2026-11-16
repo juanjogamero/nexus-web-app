@@ -1,0 +1,26 @@
+name: Angular · compilación y pruebas
+on:
+  push:
+    branches: [main, feature/nexus-marketplace-portfolio]
+    paths: ['src/**','public/**','package*.json','angular.json','tsconfig*.json','.github/workflows/angular.yml']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Instalar dependencias
+        run: npm ci
+      - name: Compilar Angular en modo producción
+        run: npm run build
+      - name: Ejecutar pruebas unitarias
+        run: npm test -- --watch=false

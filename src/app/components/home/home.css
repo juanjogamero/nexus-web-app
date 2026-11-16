@@ -1,104 +1,24 @@
-
-.feed-section {
-  padding: 60px 24px 100px; /* Buen espaciado tras el Hero */
-  max-width: 1600px;
-  margin: 0 auto;
-}
-
-/* --- Header del Feed --- */
-.feed-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 50px;
-  flex-wrap: wrap;
-  gap: 24px;
-}
-
-.section-title {
-  font-family: var(--font-primary);
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.03em;
-}
-
-/* --- Filtros Glass --- */
-.filter-tabs {
-  position: relative;
-  display: flex;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 6px;
-  border-radius: 50px; /* Pill shape */
-  overflow: hidden; /* Para contener el background animado */
-}
-
-.tab-btn {
-  position: relative;
-  z-index: 2;
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  padding: 10px 24px;
-  font-family: var(--font-primary);
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: color 0.3s;
-  border-radius: 40px;
-}
-
-.tab-btn:hover { color: #fff; }
-
-.tab-btn.active { 
-  color: #000; /* Texto oscuro sobre fondo brillante */
-}
-
-/* Fondo animado para el tab activo */
-/* Nota: En CSS puro simple usamos la clase .active en el botón para darle fondo,
-   para un efecto deslizante real se requiere un poco más de cálculo JS o posiciones fijas.
-   Aquí usamos una solución elegante estática por botón activo. */
-.tab-btn.active {
-  background: var(--gradient-primary);
-  box-shadow: 0 4px 15px rgba(168, 180, 255, 0.3);
-}
-
-/* --- Grid de Productos --- */
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 40px;
-  animation: fadeIn 0.8s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* --- Estados --- */
-.empty-state, .loading-state {
-  text-align: center;
-  padding: 100px 0;
-  color: var(--text-muted);
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(255,255,255,0.1);
-  border-top-color: var(--nexus-blue);
-  border-radius: 50%;
-  animation: spin 1s infinite linear;
-  margin: 0 auto 20px;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* Responsive */
-@media (max-width: 768px) {
-  .feed-header { flex-direction: column; align-items: flex-start; }
-  .filter-tabs { width: 100%; justify-content: space-between; }
-  .tab-btn { flex: 1; padding: 10px 0; text-align: center; font-size: 0.8rem; }
-}
+.feed-section{padding-top:44px;padding-bottom:110px}
+.demo-alert{display:flex;align-items:center;gap:16px;flex-wrap:wrap;border:1px solid #535064;background:#292833;border-radius:9px;padding:14px 18px;color:#c0bfce;font-size:.82rem;margin-bottom:52px}
+.demo-alert strong{white-space:nowrap;font-size:.7rem;letter-spacing:.12em;color:#dab2f3}.demo-alert span{flex:1}.demo-alert a{color:#d8cfff;font-weight:700}
+.feed-header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:20px 0 29px}
+.feed-eyebrow{color:var(--nexus-purple);font-size:.73rem;letter-spacing:.15em;font-weight:800}
+.section-title{font:700 clamp(2.4rem,4vw,3.8rem)/1.1 var(--font-display);letter-spacing:-.07em;margin:12px 0}
+.section-title span{color:var(--nexus-pink)}.section-intro{color:var(--text-muted);font-size:.92rem}
+.results-count{color:#9699aa;font-weight:700;font-size:.81rem}
+.filter-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:17px;margin-bottom:26px;padding-bottom:20px;border-bottom:1px solid #33343c}
+.filter-tabs{display:flex;gap:7px;flex-wrap:wrap}
+.tab-btn{border:1px solid #4b4b56;background:#24252b;color:#aeb0bd;border-radius:7px;font-weight:700;font-size:.8rem;padding:10px 15px}
+.tab-btn.active{color:#141525;background:#c8cdf8;border-color:#c8cdf8}
+.tab-btn:hover{border-color:#bdc3e2}
+.feed-selects{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.feed-selects label{display:flex;align-items:center;gap:9px;color:#a4a6b4;font-size:.76rem;font-weight:700}
+.feed-selects select{min-width:126px;max-width:180px;padding:9px;background:#25262d;color:#fff;border-radius:7px;border:1px solid #4f4f5b}
+.search-summary{color:#aaadbd;margin-bottom:18px}.search-summary strong{color:#fff}.search-summary button{color:var(--nexus-blue);background:none;border:0;font-weight:800;text-decoration:underline;margin-left:8px}
+.product-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:19px}.grid-item{min-width:0}
+.loading-state,.empty-state{text-align:center;padding:75px 20px;color:#a9aabb;background:#191a20;border-radius:12px}
+.empty-state h3{font-size:1.3rem;color:#fff;margin-bottom:10px}.empty-state p{margin-bottom:20px}.empty-state button{border:1px solid var(--nexus-blue);background:transparent;color:#e0e5ff;padding:12px 20px;border-radius:7px}
+.spinner{border:3px solid #45464d;border-top-color:var(--nexus-blue);border-radius:50%;width:34px;height:34px;margin:0 auto 18px;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:1250px){.product-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:880px){.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.filter-toolbar{align-items:flex-start}}
+@media(max-width:550px){.product-grid{gap:11px;grid-template-columns:repeat(2,minmax(0,1fr))}.tab-btn{padding:9px 12px}.feed-selects{gap:10px}.feed-selects label{flex:1}.feed-selects select{min-width:0;width:100%}.feed-section{padding-bottom:65px}.demo-alert{margin-bottom:29px}}
