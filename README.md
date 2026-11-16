@@ -1,5 +1,7 @@
 <div align="center">
 
+![Nexus, marketplace en Angular 21](public/readme-cover.svg)
+
 # nexus.
 
 **Marketplace de segunda mano y ofertas · Angular 21**

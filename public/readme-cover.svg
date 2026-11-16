@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="370" viewBox="0 0 1240 370" role="img" aria-labelledby="title desc"><title id="title">Nexus Marketplace</title><desc id="desc">Portada editorial de Nexus, marketplace de segunda mano y ofertas</desc>
+<rect width="1240" height="370" fill="#13141a"/>
+<path d="M46 54H1194M46 307H1194" stroke="#393a48"/>
+<text x="48" y="39" fill="#b1b6c8" font-family="Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="2.4">FRONTEND / ANGULAR 21 / TYPESCRIPT</text>
+<text x="1193" y="39" text-anchor="end" fill="#aeb9ff" font-family="Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="2.4">N / 001</text>
+<text x="46" y="176" fill="#f6f5f7" font-family="Arial, sans-serif" font-weight="700" font-size="115" letter-spacing="-9">nexus<tspan fill="#f0a8c0">.</tspan></text>
+<text x="50" y="227" fill="#e1e0e8" font-family="Arial, sans-serif" font-size="23" font-weight="600">Marketplace de segunda mano y ofertas.</text>
+<text x="50" y="260" fill="#a0a3b3" font-family="Arial, sans-serif" font-size="17">Una experiencia de compra, diseñada con criterio.</text>
+<text x="49" y="337" fill="#b8c1ea" font-family="Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="1.7">CATÁLOGO  /  FILTROS  /  FAVORITOS  /  ANGULAR ROUTER</text>
+<g transform="translate(775,83)"><rect x="0" y="0" width="355" height="197" rx="15" fill="#252730" stroke="#454653"/><rect x="15" y="15" width="127" height="167" rx="8" fill="#454861"/><rect x="27" y="23" width="103" height="113" rx="5" fill="#aeb9ff"/><circle cx="77" cy="71" r="27" fill="#6b709c"/><rect x="25" y="144" width="67" height="8" rx="4" fill="#adb5c8"/><rect x="25" y="160" width="45" height="6" rx="3" fill="#6f7792"/>
+<text x="165" y="37" fill="#b6b5cb" font-family="Arial" font-size="11" font-weight="700" letter-spacing="1.4">ARTÍCULO DESTACADO</text><rect x="165" y="60" width="160" height="10" rx="5" fill="#e6e5ec"/><rect x="165" y="79" width="127" height="9" rx="5" fill="#e6e5ec"/><text x="165" y="131" fill="#d4b6e8" font-family="Arial" font-size="29" font-weight="700">79,00 €</text><rect x="165" y="151" width="160" height="30" rx="7" fill="#c3c9ff"/><text x="245" y="171" fill="#1b2033" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700">VER DETALLES ↗</text></g>
+</svg>
