@@ -1,6 +1,7 @@
-// Copia este archivo como enviroment.ts y configura la URL de tu API.
+// Copia de configuración para conectar un backend propio. No incluyas secretos.
 export const environment = {
   production: false,
+  demoMode: true,
   apiUrl: 'http://localhost:8080',
   upload: {
     allowedImageTypes: ['image/jpeg', 'image/png', 'image/webp'],

@@ -3,36 +3,21 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth-service';
+import { environment } from '../../environments/enviroment';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  
   constructor(private authService: AuthService) {}
-
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Obtener el token del servicio de autenticación
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this.authService.getToken();
-
-    // Si existe token, añadirlo al header Authorization
-    if (token) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-    }
-
-    // Continuar con la petición y manejar errores
-    return next.handle(request).pipe(
+    // Evita adjuntar tokens a imágenes, tiendas u otros dominios externos.
+    const belongsToApi = request.url.startsWith(environment.apiUrl.replace(/\/$/, '') + '/');
+    const authenticatedRequest = token && belongsToApi
+      ? request.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+      : request;
+    return next.handle(authenticatedRequest).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Si el error es 401 (Unauthorized), cerrar sesión
-        if (error.status === 401) {
-          this.authService.logout();
-          // Opcionalmente redirigir a login
-          // this.router.navigate(['/login']);
-        }
-
-        // Propagar el error
+        if (error.status === 401 && belongsToApi) this.authService.logout();
         return throwError(() => error);
       })
     );

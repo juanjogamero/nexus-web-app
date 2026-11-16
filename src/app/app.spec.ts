@@ -1,23 +1,22 @@
 import { TestBed } from '@angular/core/testing';
-import { App } from './app';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { AppComponent } from './app';
+import { routes } from './app.routes';
 
-describe('App', () => {
+describe('Aplicación Nexus', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [AppComponent],
+      providers: [provideRouter(routes), provideHttpClient()]
     }).compileComponents();
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it('should render title', async () => {
-    const fixture = TestBed.createComponent(App);
+  it('muestra la navegación principal', async () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
     await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, nexusapp');
+    expect(fixture.nativeElement.querySelector('header')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('router-outlet')).toBeTruthy();
   });
 });

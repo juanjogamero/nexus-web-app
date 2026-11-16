@@ -1,15 +1,12 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home';
 import { ProductDetailComponent } from './components/product-detail/product-detail';
+import { AboutComponent } from './components/about/about';
 
 export const routes: Routes = [
-  // Cuando la URL está vacía (inicio), carga la Home
-  { path: '', component: HomeComponent },
-  
-  // Rutas de detalle
-  { path: 'producto/:id', component: ProductDetailComponent },
-  { path: 'oferta/:id', component: ProductDetailComponent },
-  
-  // Si no encuentra nada, vuelve al inicio
+  { path: '', component: HomeComponent, title: 'Nexus | Marketplace' },
+  { path: 'producto/:id', component: ProductDetailComponent, title: 'Producto | Nexus' },
+  { path: 'oferta/:id', component: ProductDetailComponent, title: 'Oferta | Nexus' },
+  { path: 'proyecto', component: AboutComponent, title: 'El proyecto | Nexus' },
   { path: '**', redirectTo: '' }
 ];
